@@ -1,4 +1,6 @@
-﻿namespace RecipeBookCompiler
+﻿using RecipeBookCompiler.CodeAnalysis;
+
+namespace RecipeBookCompiler
 {
     public static class Program
     {
@@ -10,9 +12,15 @@
                 string? line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
                     break;
+                Lexer lexer = new Lexer(line);
 
-                if (line.ToUpper() == "PRINT TWO PLUS TWO.")
-                    Console.WriteLine("FOUR");
+                while (true)
+                {
+                    SyntaxToken token = lexer.Lex();
+                    if (token.Kind == SyntaxKind.EndOfFileToken || token.Kind == SyntaxKind.BadToken)
+                        break;
+                    Console.WriteLine($"{token.Kind} - {token.Text} : {token.Value}");
+                }
             }
         }
     }
